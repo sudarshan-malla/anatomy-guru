@@ -2,11 +2,22 @@
   publish = "."
 
 [[redirects]]
-  # Only redirect if the requested path is not an actual file (like index.tsx)
+  # Redirect all routes to index.html for SPA support, 
+  # but only if a physical file (like index.tsx) does NOT exist.
   from = "/*"
   to = "/index.html"
   status = 200
   force = false
+
+[[headers]]
+  for = "/*.tsx"
+  [headers.values]
+    Content-Type = "application/javascript"
+
+[[headers]]
+  for = "/*.ts"
+  [headers.values]
+    Content-Type = "application/javascript"
 
 [[headers]]
   for = "/*"
@@ -14,5 +25,5 @@
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    # Relaxed CSP to ensure esm.sh and CDNs work without friction
-    Content-Security-Policy = "default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://cdn.tailwindcss.com https://esm.sh https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.anatomyguru.in https://*.anatomyguru.in; connect-src 'self' https://generativelanguage.googleapis.com https://*.googleapis.com; worker-src 'self' blob: https://cdnjs.cloudflare.com;"
+    # Added blob: to script-src and connect-src for PDF.js and ESM worker stability
+    Content-Security-Policy = "default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://cdn.tailwindcss.com https://esm.sh https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.anatomyguru.in https://*.anatomyguru.in; connect-src 'self' blob: https://generativelanguage.googleapis.com https://*.googleapis.com; worker-src 'self' blob: https://cdnjs.cloudflare.com;"
