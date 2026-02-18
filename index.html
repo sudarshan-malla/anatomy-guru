@@ -6,28 +6,13 @@
     <title>AnatomyGuru Audit Engine</title>
     
     <script>
-      // 1. Immediate process shim for medical/AI libraries
+      // Shim process for libraries like @google/genai that expect a Node-like env
       window.process = { 
         env: { NODE_ENV: 'production', API_KEY: '' },
         cwd: () => '/',
         browser: true
       };
       window.global = window;
-
-      // 2. Diagnostic tool to catch "White Screen" causes
-      window.addEventListener('error', function(e) {
-        const root = document.getElementById('root');
-        if (root && (!root.innerHTML || root.innerHTML === '')) {
-          root.innerHTML = `
-            <div style="padding: 40px; font-family: system-ui, sans-serif; max-width: 600px; margin: 40px auto; background: #fff1f2; border: 1px solid #fda4af; border-radius: 12px; color: #9f1239;">
-              <h2 style="margin-top:0">Unable to Start Engine</h2>
-              <p><strong>Error:</strong> ${e.message}</p>
-              <p style="font-size: 0.875rem; color: #be123c;">Source: ${e.filename}:${e.lineno}</p>
-              <button onclick="location.reload()" style="background:#9f1239; color:white; border:none; padding:8px 16px; border-radius:6px; font-weight:bold; cursor:pointer;">Retry Load</button>
-            </div>
-          `;
-        }
-      });
     </script>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -39,26 +24,24 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         @media print { .no-print { display: none !important; } }
     </style>
-
-    <script type="importmap">
+<script type="importmap">
 {
   "imports": {
-    "react": "https://esm.sh/react@19.0.0",
-    "react-dom": "https://esm.sh/react-dom@19.0.0",
-    "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
-    "react/jsx-runtime": "https://esm.sh/react@19.0.0/jsx-runtime",
-    "@google/genai": "https://esm.sh/@google/genai@1.4.0",
-    "mammoth": "https://esm.sh/mammoth@1.8.0",
-    "pdfjs-dist": "https://esm.sh/pdfjs-dist@3.11.174",
-    "docx": "https://esm.sh/docx@9.1.0",
+    "react": "https://esm.sh/react@^19.2.4",
     "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
-    "react/": "https://esm.sh/react@^19.2.4/"
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "vite": "https://esm.sh/vite@^7.3.1",
+    "@google/genai": "https://esm.sh/@google/genai@^1.41.0",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.4",
+    "pdfjs-dist": "https://esm.sh/pdfjs-dist@^5.4.624",
+    "docx": "https://esm.sh/docx@^9.5.3",
+    "mammoth": "https://esm.sh/mammoth@^1.11.0"
   }
 }
 </script>
 </head>
 <body>
     <div id="root"></div>
-    <script type="module" src="index.tsx"></script>
+    <script type="module" src="/index.tsx"></script>
 </body>
 </html>
