@@ -3,40 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnatomyGuru Evaluation System</title>
+    <title>AnatomyGuru Audit Engine</title>
     
-    <!-- Critical: Global process shim must be the very first script -->
+    <!-- 1. Global Shims (Must be first) -->
     <script>
-      window.process = {
-        env: {
-          NODE_ENV: 'production',
-          API_KEY: '' 
-        }
+      // Support for libraries expecting 'process.env'
+      const proc = {
+        env: { NODE_ENV: 'production', API_KEY: '' },
+        cwd: () => '/',
+        browser: true
       };
+      window.process = proc;
+      globalThis.process = proc;
     </script>
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
-            margin: 0;
-            min-height: 100vh;
-        }
-        .animate-fade-in { animation: fadeIn 0.5s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        @media print {
-            .no-print { display: none !important; }
-            .print-only { display: block !important; }
-            body { background: white; padding: 0; }
-            .report-container { box-shadow: none !important; border: none !important; margin: 0 !important; width: 100% !important; max-width: none !important; }
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; margin: 0; min-height: 100vh; }
+        .report-mode { background: #fff; }
+        @media print { .no-print { display: none !important; } }
     </style>
 
-<script type="importmap">
+    <!-- 2. Optimized Import Map (Standardized to React 19.0.0) -->
+    <script type="importmap">
 {
   "imports": {
     "react": "https://esm.sh/react@19.0.0",
@@ -52,9 +43,28 @@
   }
 }
 </script>
+
+    <!-- 3. Module Error Reporter (Helps diagnose loading failures) -->
+    <script>
+      window.addEventListener('error', function(e) {
+        if (e.target && (e.target.src || e.target.href)) {
+          const root = document.getElementById('root');
+          if (root && !root.innerHTML.trim()) {
+            root.innerHTML = `
+              <div style="padding: 40px; text-align: center; color: #e11d48; font-family: sans-serif;">
+                <h2 style="font-weight: 900;">Module Loading Failed</h2>
+                <p style="color: #475569;">Could not load: <code>${e.target.src || e.target.href}</code></p>
+                <p style="font-size: 13px;">Check your internet connection or console for 404 errors.</p>
+                <button onclick="location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #0f172a; color: white; border: none; border-radius: 6px; cursor: pointer;">Retry Load</button>
+              </div>
+            `;
+          }
+        }
+      }, true);
+    </script>
 </head>
 <body>
     <div id="root"></div>
-    <script type="module" src="index.tsx"></script>
+    <script type="module" src="./index.tsx"></script>
 </body>
 </html>
