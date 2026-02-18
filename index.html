@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AnatomyGuru Evaluation System</title>
     
-    <!-- Shim for process.env to prevent ReferenceErrors in browser -->
+    <!-- Critical: Global process shim must be the very first script -->
     <script>
       window.process = {
         env: {
           NODE_ENV: 'production',
-          API_KEY: undefined // Environment variable will override this at runtime
+          API_KEY: '' 
         }
       };
     </script>
@@ -23,18 +23,17 @@
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
             margin: 0;
+            min-height: 100vh;
         }
-        .brand-font {
-            font-family: 'Playfair+Display', serif;
-        }
+        .animate-fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
         @media print {
             .no-print { display: none !important; }
             .print-only { display: block !important; }
             body { background: white; padding: 0; }
             .report-container { box-shadow: none !important; border: none !important; margin: 0 !important; width: 100% !important; max-width: none !important; }
         }
-        .animate-fade-in { animation: fadeIn 0.5s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 
 <script type="importmap">
@@ -43,12 +42,13 @@
     "react": "https://esm.sh/react@19.0.0",
     "react-dom": "https://esm.sh/react-dom@19.0.0",
     "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
-    "react/": "https://esm.sh/react@19.0.0/",
-    "react-dom/": "https://esm.sh/react-dom@19.0.0/",
+    "react/jsx-runtime": "https://esm.sh/react@19.0.0/jsx-runtime",
     "@google/genai": "https://esm.sh/@google/genai@1.4.0",
     "mammoth": "https://esm.sh/mammoth@1.8.0",
     "pdfjs-dist": "https://esm.sh/pdfjs-dist@3.11.174",
-    "docx": "https://esm.sh/docx@9.1.0"
+    "docx": "https://esm.sh/docx@9.1.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/"
   }
 }
 </script>

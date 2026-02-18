@@ -1,7 +1,5 @@
 {
   "name": "AnatomyGuru Feedback Streamliner - Pro",
   "description": "An AI-powered SaaS application for professional medical evaluation reports, optimized for high-performance Netlify deployment.",
-  "requestFramePermissions": [
-    "camera"
-  ]
+  "requestFramePermissions": []
 }
