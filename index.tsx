@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
 
-console.log("AnatomyGuru Engine: Root Module Loaded.");
+console.info("AnatomyGuru Audit Engine: Initializing Application...");
 
 const rootElement = document.getElementById('root');
 
@@ -14,9 +14,11 @@ if (rootElement) {
         <App />
       </React.StrictMode>
     );
+    console.info("AnatomyGuru Audit Engine: Render successful.");
   } catch (err) {
-    console.error("React Mounting Error:", err);
+    console.error("Critical: Failed to mount React application:", err);
+    rootElement.innerHTML = `<div style="padding:20px; color:red; font-family:sans-serif;">Mount Error: ${err instanceof Error ? err.message : String(err)}</div>`;
   }
 } else {
-  console.error("Critical Error: Root element #root not found in the DOM.");
+  console.error("Fatal: DOM node #root was not found.");
 }

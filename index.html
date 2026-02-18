@@ -6,13 +6,28 @@
     <title>AnatomyGuru Audit Engine</title>
     
     <script>
-      // Critical: Mock process environment for libraries that expect it (like @google/genai)
+      // 1. Immediate process shim for medical/AI libraries
       window.process = { 
         env: { NODE_ENV: 'production', API_KEY: '' },
         cwd: () => '/',
         browser: true
       };
       window.global = window;
+
+      // 2. Diagnostic tool to catch "White Screen" causes
+      window.addEventListener('error', function(e) {
+        const root = document.getElementById('root');
+        if (root && (!root.innerHTML || root.innerHTML === '')) {
+          root.innerHTML = `
+            <div style="padding: 40px; font-family: system-ui, sans-serif; max-width: 600px; margin: 40px auto; background: #fff1f2; border: 1px solid #fda4af; border-radius: 12px; color: #9f1239;">
+              <h2 style="margin-top:0">Unable to Start Engine</h2>
+              <p><strong>Error:</strong> ${e.message}</p>
+              <p style="font-size: 0.875rem; color: #be123c;">Source: ${e.filename}:${e.lineno}</p>
+              <button onclick="location.reload()" style="background:#9f1239; color:white; border:none; padding:8px 16px; border-radius:6px; font-weight:bold; cursor:pointer;">Retry Load</button>
+            </div>
+          `;
+        }
+      });
     </script>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -44,8 +59,6 @@
 </head>
 <body>
     <div id="root"></div>
-    <!-- Note: In a pure Netlify environment without a build step, index.tsx must be transpiled. 
-         Assuming the deployment environment handles TSX-to-JS transpilation via middleware. -->
     <script type="module" src="index.tsx"></script>
 </body>
 </html>
