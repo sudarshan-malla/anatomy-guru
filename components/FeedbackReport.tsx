@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { EvaluationReport } from '../types';
+import { EvaluationReport } from '../types.ts';
 
 // Using a placeholder logo path to avoid ESM import errors for non-JS files
 const logo = 'https://www.anatomyguru.in/assets/img/logo.jpg';

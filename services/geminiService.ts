@@ -1,6 +1,5 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
-import { EvaluationReport, FileData } from "../types";
+import { EvaluationReport, FileData } from "../types.ts";
 
 export type EvaluationMode = 'with-manual' | 'without-manual';
 
@@ -151,7 +150,9 @@ export const generateStructuredFeedback = async (
   });
 
   try {
-    const data = JSON.parse(response.text);
+    const text = response.text;
+    if (!text) throw new Error("Empty response from AI");
+    const data = JSON.parse(text);
     return data as EvaluationReport;
   } catch (error) {
     console.error("Failed to parse Gemini response:", error);
