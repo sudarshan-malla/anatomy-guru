@@ -5,16 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AnatomyGuru Audit Engine</title>
     
-    <!-- 1. Global Shims (Must be first) -->
     <script>
-      // Support for libraries expecting 'process.env'
-      const proc = {
+      // Force process.env to exist before any modules load
+      const mockProcess = {
         env: { NODE_ENV: 'production', API_KEY: '' },
         cwd: () => '/',
         browser: true
       };
-      window.process = proc;
-      globalThis.process = proc;
+      window.process = mockProcess;
+      globalThis.process = mockProcess;
     </script>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -22,11 +21,11 @@
     
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; margin: 0; min-height: 100vh; }
-        .report-mode { background: #fff; }
         @media print { .no-print { display: none !important; } }
+        .animate-fade-in { animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 
-    <!-- 2. Optimized Import Map (Standardized to React 19.0.0) -->
     <script type="importmap">
 {
   "imports": {
@@ -44,18 +43,20 @@
 }
 </script>
 
-    <!-- 3. Module Error Reporter (Helps diagnose loading failures) -->
     <script>
+      // Fallback UI if Javascript fails to load or execute
       window.addEventListener('error', function(e) {
         if (e.target && (e.target.src || e.target.href)) {
           const root = document.getElementById('root');
           if (root && !root.innerHTML.trim()) {
             root.innerHTML = `
-              <div style="padding: 40px; text-align: center; color: #e11d48; font-family: sans-serif;">
-                <h2 style="font-weight: 900;">Module Loading Failed</h2>
-                <p style="color: #475569;">Could not load: <code>${e.target.src || e.target.href}</code></p>
-                <p style="font-size: 13px;">Check your internet connection or console for 404 errors.</p>
-                <button onclick="location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #0f172a; color: white; border: none; border-radius: 6px; cursor: pointer;">Retry Load</button>
+              <div style="padding: 40px; text-align: center; color: #e11d48; font-family: sans-serif; max-width: 500px; margin: 0 auto;">
+                <h2 style="font-weight: 900; margin-bottom: 10px;">Connection Error</h2>
+                <p style="color: #475569;">We couldn't load the application modules. This is usually due to a network restriction or a missing file.</p>
+                <div style="background: #f1f5f9; padding: 10px; border-radius: 6px; margin: 20px 0; font-size: 12px; text-align: left; overflow-x: auto;">
+                  <code>Failed to load: ${e.target.src || e.target.href}</code>
+                </div>
+                <button onclick="location.reload()" style="padding: 12px 24px; background: #0f172a; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">Try Again</button>
               </div>
             `;
           }
@@ -65,6 +66,6 @@
 </head>
 <body>
     <div id="root"></div>
-    <script type="module" src="./index.tsx"></script>
+    <script type="module" src="index.tsx"></script>
 </body>
 </html>

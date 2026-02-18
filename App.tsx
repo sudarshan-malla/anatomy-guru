@@ -4,15 +4,11 @@ import { EvaluationReport, FileData } from './types.ts';
 import FileUploader from './components/FileUploader.tsx';
 import FeedbackReport from './components/FeedbackReport.tsx';
 
-// Robust imports for browser ESM libraries
-// @ts-ignore
+// Standardized imports using the names from importmap
 import mammoth from 'mammoth';
-// @ts-ignore
 import * as pdfjsLib from 'pdfjs-dist';
-// @ts-ignore
 import { Document, Packer, Paragraph, TextRun } from 'docx';
 
-// Safe Worker setup for PDF.js
 const initPdfWorker = () => {
   try {
     const pdfjs: any = (pdfjsLib as any).GlobalWorkerOptions 
@@ -50,7 +46,7 @@ const App: React.FC = () => {
 
   const extractTextFromPDF = async (file: File): Promise<string> => {
     if (!pdfjsInstance || !pdfjsInstance.getDocument) {
-      throw new Error("PDF processing engine is not ready.");
+      throw new Error("PDF engine is initializing. Please wait a moment.");
     }
     const arrayBuffer = await file.arrayBuffer();
     const loadingTask = pdfjsInstance.getDocument({ data: arrayBuffer });
@@ -83,11 +79,11 @@ const App: React.FC = () => {
         const text = await extractTextFromPDF(file);
         if (text.trim().length > 50) return { text, name: file.name, isDocx: false };
       } catch (e) { 
-        console.warn("PDF text extraction failed, falling back to visual analysis", e); 
+        console.warn("PDF text extraction fallback", e); 
       }
     }
 
-    setLoadingStep(`Preparing visual analysis for ${file.name}...`);
+    setLoadingStep(`Preparing visual analysis...`);
     const base64 = await new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
@@ -110,31 +106,19 @@ const App: React.FC = () => {
       const result = await generateStructuredFeedback(sourceData, feedbackData, evalMode);
       setReport(result);
     } catch (err: any) {
-      console.error("Analysis error:", err);
-      setError(err.message || "An unexpected error occurred during evaluation.");
+      console.error("Analysis failure:", err);
+      setError(err.message || "An unexpected error occurred. Please check your API configuration.");
     } finally {
       setIsLoading(false);
       setLoadingStep('');
     }
   };
 
-  if (error && error.includes("ReferenceError")) {
-    return (
-      <div className="flex items-center justify-center min-h-screen p-6">
-        <div className="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full border border-red-100">
-          <h2 className="text-2xl font-bold text-red-600 mb-4">Runtime Error</h2>
-          <p className="text-slate-600 mb-6">{error}</p>
-          <button onClick={() => window.location.reload()} className="w-full bg-slate-900 text-white py-3 rounded-xl font-bold">Reload Application</button>
-        </div>
-      </div>
-    );
-  }
-
   const renderDashboard = () => (
     <div className="max-w-4xl mx-auto py-12 px-4 animate-fade-in">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-black text-slate-900 mb-2">AnatomyGuru <span className="text-red-600">Audit</span></h1>
-        <p className="text-slate-500 font-medium italic">Professional Grade Medical Feedback Engine</p>
+        <p className="text-slate-500 font-medium italic">Clinical Grade Medical Feedback Engine</p>
       </div>
 
       <div className="flex justify-center mb-8">

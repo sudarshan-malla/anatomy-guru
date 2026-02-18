@@ -2,17 +2,17 @@
   publish = "."
 
 [[redirects]]
+  # Only redirect if the requested path is not an actual file (like index.tsx)
   from = "/*"
   to = "/index.html"
   status = 200
+  force = false
 
 [[headers]]
   for = "/*"
   [headers.values]
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
-    X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
-    # Content-Security-Policy: Relaxed for development and ESM.sh
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://cdn.tailwindcss.com https://esm.sh https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.anatomyguru.in https://*.anatomyguru.in; connect-src 'self' https://generativelanguage.googleapis.com https://*.googleapis.com; worker-src 'self' blob: https://cdnjs.cloudflare.com; frame-src 'none';"
+    # Relaxed CSP to ensure esm.sh and CDNs work without friction
+    Content-Security-Policy = "default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://cdn.tailwindcss.com https://esm.sh https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.anatomyguru.in https://*.anatomyguru.in; connect-src 'self' https://generativelanguage.googleapis.com https://*.googleapis.com; worker-src 'self' blob: https://cdnjs.cloudflare.com;"
